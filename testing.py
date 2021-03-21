@@ -29,13 +29,19 @@ def main():
                                                           granularity = GRANULARITY["ONE_DAY"])
 
     # 2) parsing the CB-API
+    time_data = [np.datetime64(hist_rate[HIST_RATES_KEYS["time"]], 's') for hist_rate in hist_rates]
+    price_data = [hist_rate[HIST_RATES_KEYS["close"]] for hist_rate in hist_rates]
+
 
     # 3) make plot
+    fig = plt.figure()
+    ax = plt.axes()
+    ax.plot(time_data, np.array(price_data));
+
 
     # 4) display plot
+    plt.show()
 
-
-    print(hist_rates)
 
 if __name__ == '__main__':
     main()
