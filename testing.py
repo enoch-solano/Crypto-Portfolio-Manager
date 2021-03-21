@@ -1,8 +1,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from decimal import Decimal
 
 import cbpro
 public_client = cbpro.PublicClient()
+
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
+key =        os.environ.get("key")
+b64secret =  os.environ.get("secret")
+passphrase = os.environ.get("passphrase")
+
+auth_client = cbpro.AuthenticatedClient(key, b64secret, passphrase,
+                                  api_url="https://api-public.sandbox.pro.coinbase.com")
+
+accounts = auth_client.get_accounts()
+
+for account in accounts:
+    print(account)
+
+
 
 import csv
 
@@ -25,7 +44,7 @@ HIST_RATES_KEYS = { "time" :    0,  # unix timestamp of bucket start time
 
 def main():
     # 1) using the CB-API
-    hist_rates = public_client.get_product_historic_rates('BTC-USD',
+    hist_rates = auth_client.get_product_historic_rates('BTC-USD',
                                                           start=None, end=None,
                                                           granularity = GRANULARITY["ONE_DAY"])
 
@@ -49,6 +68,9 @@ def main():
         writer.writeheader()
         for datetime, price in zip(time_data, price_data):
             writer.writerow({ 'datetime' : datetime, 'closing_price' : price })
+
+
+
 
 if __name__ == '__main__':
     main()
